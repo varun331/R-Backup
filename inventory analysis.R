@@ -1,0 +1,7 @@
+Inventory <- read.csv(file="~/Documents/Finance/Inventory Analysis/CustomInventoryProfitability-374.csv",head=T)
+Inventory <- data.frame(Inventory)
+Inventory$Qty..Sold <- as.numeric(Inventory$Qty..Sold)
+Inventory3 <- subset(Inventory,Inventory$Qty..Sold>1)
+Inventory3$Total.Cost1 <- sub('\\$','',as.character(Inventory3$Total.Cost))
+Inventory3$Total.Cost2 <- as.numeric(gsub(',','',(Inventory3$Total.Cost1)))                                
+Inventory4 <- subset(Inventory3,Inventory3$Total.Cost2<=0)
