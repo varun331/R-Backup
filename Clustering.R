@@ -1,6 +1,6 @@
 library(xlsx)
-train <- read.csv("~/Documents/R Projects/McCormick.csv",header=T)
-train1 <- train[,c(8,10,12,14,16,18,21,23,27,29,30,31,34,36,38,40,42,44,46,48,49:64)]
+rw <- read.csv("~/Documents/R Projects/McCormick.csv",header=T)
+train1 <- rw[,c(8,10,12,14,16,18,21,23,27,29,30,31,34,36,38,40,42,44,46,48,49:64)]
 head(train)
 library(ggplot2)
 library(GGally)
@@ -12,7 +12,7 @@ ggpairs(train1,columns=c(10,32:36))
 //qplot(Campaign.Name,Page.Likes,data=train1)
 --------------------------------------------l
 
-ibrary(cluster)
+library(cluster)
 library(fpc)
 dat <- train1[,c(1:36)]
 dat <- na.omit(dat)
@@ -48,13 +48,26 @@ test <- dat[-sub,]
 library(splines)
 library(foreach)
 library(gam)
-gam.m1=gam(dat[,10]~s(dat[,5])+(dat[,4])+(dat[,9])+(dat[,11])+s(dat[,12])+s(dat[,13])
-           +(dat[,14])+(dat[,15])+(dat[,16])+(dat[,17])+(dat[,18])+(dat[,19])+(dat[,20])
-           +s(dat[,21])+s(dat[,22])+s(dat[,23])+s(dat[,24])+s(dat[,25])+s(dat[,26])+s(dat[,27])
-           +s(dat[,28])+s(dat[,29])+s(dat[,30])+s(dat[,31])+s(dat[,32])+s(dat[,33])+s(dat[,34])
-           +s(dat[,35])+s(dat[,36]),data=dat)
+gam.m1=gam(train[,10]~s(train[,5])+(train[,4])+(train[,9])+(train[,11])+s(train[,12])+s(train[,13])
+           +(train[,14])+(train[,15])+(train[,16])+(train[,17])+(train[,18])+(train[,19])+(train[,20])
+           +s(train[,21])+s(train[,22])+s(train[,23])+s(train[,24])+s(train[,25])+s(train[,26])+s(train[,27])
+           +s(train[,28])+s(train[,29])+s(train[,30])+s(train[,31])+s(train[,32])+s(train[,33])+s(train[,34])
+           +s(train[,35])+s(train[,36]),data=train)
 summary(gam.m1)
+
+gam.m2=gam(train[,10]~s(train[,12])+train[,16]+train[,19],data=train)
+summary(gam.m2)
+predict = predict(gam.m2,test)
+predict1=predict(gam.m2,train)
+results = data.frame(test[,10],predict)
+> library(Metrics)
+mse(test[,10],predict)
 
 //gam.m1=gam(ER~s(Coded.Placement)+s(Coded.Campaign.Type),data=dat)
 plot.gam(gam.m1,se=T,col="blue")
+
+
+-----------------------------------------
+  
+  
 
