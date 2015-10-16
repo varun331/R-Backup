@@ -71,10 +71,17 @@ plot.gam(gam.m1,se=T,col="blue")
   
 library(randomForest)  
 set.seed(1)
-bag.train=randomForest(ER~.,data=train,ntree=25)
+bag.train=randomForest(ER~.,data=train,importance=TRUE)
 bag.train
 yhat.bag=predict(bag.train,newdata = test)
 mse(test[,10],yhat.bag)
+varImpPlot(bag.train)
 
 ---------------------------------------------
-
+library(gbm)
+set.seed(1)
+boost.train=gbm(ER~.,data=train,distribution = "gaussian",
+                n.trees=5000)
+summary(boost.train)
+yhat.boost=predict(boost.train,newdata = test,n.trees = 5000)
+mse(test[,10],yhat.boost)
