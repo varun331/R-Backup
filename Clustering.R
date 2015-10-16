@@ -1,6 +1,6 @@
 library(xlsx)
 rw <- read.csv("~/Documents/R Projects/McCormick.csv",header=T)
-train1 <- rw[,c(8,10,12,14,16,18,21,23,27,29,30,31,34,36,38,40,42,44,46,48,49:64)]
+rw1 <- rw[,c(8,10,12,14,16,18,21,23,27,29,30,31,34,36,38,40,42,44,46,48,49:64)]
 head(train)
 library(ggplot2)
 library(GGally)
@@ -14,7 +14,7 @@ ggpairs(train1,columns=c(10,32:36))
 
 library(cluster)
 library(fpc)
-dat <- train1[,c(1:36)]
+dat <- rw1[,c(1:36)]
 dat <- na.omit(dat)
 for (i in 1:36){dat[,c(i)] <- as.numeric(dat[,c(i)])}
 //dat$CPA <- as.numeric(dat$CPA)
@@ -60,7 +60,7 @@ summary(gam.m2)
 predict = predict(gam.m2,test)
 predict1=predict(gam.m2,train)
 results = data.frame(test[,10],predict)
-> library(Metrics)
+library(Metrics)
 mse(test[,10],predict)
 
 //gam.m1=gam(ER~s(Coded.Placement)+s(Coded.Campaign.Type),data=dat)
@@ -69,5 +69,12 @@ plot.gam(gam.m1,se=T,col="blue")
 
 -----------------------------------------
   
-  
+library(randomForest)  
+set.seed(1)
+bag.train=randomForest(ER~.,data=train,ntree=25)
+bag.train
+yhat.bag=predict(bag.train,newdata = test)
+mse(test[,10],yhat.bag)
+
+---------------------------------------------
 
