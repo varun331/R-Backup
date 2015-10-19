@@ -85,3 +85,8 @@ boost.train=gbm(ER~.,data=train,distribution = "gaussian",
 summary(boost.train)
 yhat.boost=predict(boost.train,newdata = test,n.trees = 5000)
 mse(test[,10],yhat.boost)
+
+---------------------------------------------
+install.packages("shiny")
+library(shiny)
+runApp("App-1",display.mode = "showcase")
