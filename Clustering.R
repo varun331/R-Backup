@@ -85,7 +85,7 @@ set.seed(1)
 boost.train=gbm(ER~.,data=train,distribution = "gaussian",
                 n.trees=5000)
 summary(boost.train)
-yhat.boost=predict(boost.train,newdata = test,n.trees = 5000)
+yhat.boost=predict(boost.train,newdata = test1,n.trees = 5000)
 (yhat.boost)
 mse(test[,10],yhat.boost)
 
