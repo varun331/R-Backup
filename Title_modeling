@@ -1,0 +1,91 @@
+Import requests
+import re
+import pprint
+import pandas as pd
+import gensim
+import nltk
+from nltk.corpus import stopwords, inaugural
+import warnings
+import time
+
+
+pp = pprint.PrettyPrinter(indent=4)
+
+
+url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+
+l = [] # collect articles
+neighborhood = "Nike"
+
+for p in range(0,10):
+   time.sleep(1.1) # delays for 1.1 seconds
+   payload = {
+       'api-key': "d98ee182ae5c4bfb93333a639621554b",
+       'q': neighborhood,
+       'begin_date': "20160101",
+       'end_date': "20161101",
+       'sort': "oldest",
+       'page': p,
+   }
+
+   response = requests.get(url, params=payload)
+   try:
+       data = response.json()
+   except:
+       continue
+
+   for item in data['response']['docs']:
+       l.append(item['lead_paragraph'])
+   
+   
+DF = pd.DataFrame(data={'lead_paragraph': l,
+                 'neighborhood': neighborhood})
+
+
+def process(speech):
+   stoplist = set(stopwords.words())
+   return [re.sub(r'-|\*|\$|;|:|\(|\.|\,|\)|[0-9]*',"", word) for word in speech.lower().split() if word not in stoplist]
+
+processed_text = [process(item) for item in DF.lead_paragraph if pd.isnull(item) == False]
+
+# create a dictionary that maps words to integers.
+dictionary = gensim.corpora.Dictionary(processed_text)
+
+# filter out really frequent and infrequent words
+dictionary.filter_extremes(no_below=2, no_above=0.1)
+
+corpus = [dictionary.doc2bow(item) for item in processed_text]
+corpus_tfidf = tfidf[corpus]
+
+tfidf = gensim.models.TfidfModel(corpus, id2word=dictionary)
+
+ 
+DF.lead_paragraph.loc[3]
+
+  
+print dictionary
+
+  
+lda = gensim.models.ldamodel.LdaModel(corpus, id2word = dictionary, num_topics=200, passes=4)
+corpus_lda = lda[corpus_tfidf]
+
+ 
+lda.print_topics(-1,6)
+
+
+topic_text = [dictionary[item[0]] for item in lda.print_topics(-1)]#, num_words=3)
+
+
+lda.get_document_topics(corpus[9])
+
+
+pp.pprint([dictionary[item[0]] for item in corpus[3]])
+
+ 
+DF.iloc[2]["lead_paragraph"]
+
+ 
+raw_text = ''.join(DF.lead_paragraph.tolist())
+
+for topic in topic_text:
+   print topic, raw_text.count(topic)
